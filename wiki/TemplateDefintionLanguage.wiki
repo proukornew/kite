@@ -9,8 +9,7 @@ Here is an example of KiTE template:
 </ul>
 }}}
 
-
-When given by JS data in following format:
+When given by following JS data:
 {{{
 { 
   contacts:[
@@ -65,5 +64,3 @@ Conditional sections get rendered if their expression evaluates to _true_ in run
 
   * `{{? expr1 }}`  section1 `{{? expr2}}`  section2 ...  `{{^?}}` ... "else" section `{{/?}}`
  that are "chained" conditional sections. They follow statndard if-elseif-elseif-else-fi logic used in almost all programming languages.
-
-Example [tbd]
