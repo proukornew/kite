@@ -35,8 +35,11 @@ KiTE uses three types of directives:
 ===Variables===
 
 Variable placeholder is indicated by enclosing variable name in '{{' and '}}' brackets. There are two forms of variable declarations:
-  * `{{varname}}` - simple form, value of the variable will be inserted as it is and without any kind of escapment;
-  * `{{varname|formatname}}` - value insertion with the name of formatting function separated by the pipe '`|`' symbol . Formatting function will receive variable value and shall produce string - formatted representation of the value for the output.
+  * `{{varname}}` 
+ simple form, value of the variable will be inserted as it is and without any kind of escapment;
+
+  * `{{varname|formatname}}` 
+ value insertion with the name of formatting function separated by the pipe '`|`' symbol . Formatting function will receive variable value and shall produce string - formatted representation of the value for the output.
 
 While instantiating the template the KiTE will try to find the _varname_ in current context (current JavaScript object). If the name is not found (undefined) then no result is produced.
 
@@ -44,11 +47,10 @@ While instantiating the template the KiTE will try to find the _varname_ in curr
 
 Blocks designate sections that will repeat enclosed content one or more times.  There are two forms of block declarations:
   * `{{#varname}}` ... section text ... `{{/varname}}`
+ simple block.
 
-simple block.
   * `{{#varname}}` ... section text ... `{{^varname}}` ... alternative text ... `{{/varname}}`
-
-block with alternative section that will be rendered if the _varname_ resolves to an empty array or to _false_.
+ block with alternative section that will be rendered if the _varname_ resolves to an empty array or to _false_.
 
 If the _varname_ resolves to an array then the block gets repeated in output for each element of the array. The context of the block will be set to the current item in each iteration. If the value of _varname_ is an object then it will be set as a current context and content will be rendered once for the object.
 
