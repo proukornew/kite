@@ -84,7 +84,7 @@
       if( fmti >= 0) { frmf = name.substr(fmti+1); 
                        name = name.substr(0,fmti);
                        frmf = formatters[frmf] || primordial_formatters[frmf]; }
-      if( name == "*" )
+      if( name == "." )
       {
         if( frmf ) return function() { out += frmf(context,context); return 1; };
         else       return function() { if( context !== undefined ) out += context; return 1; };
