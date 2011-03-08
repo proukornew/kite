@@ -9,7 +9,7 @@ There is an optional collection of formatting functions that is available at kit
 
 Has following signature: 
 
-`kite(_template_:string, _data_: object | array [,_formatters_]): string`
+`kite(template:string, data: object | array [, formatters ]): string`
 
 Where:
   * _template_, string, is a source of the template or if it starts from '#' is treated as an id of `<script type="text/x-kite" id=...>` element that contains template source.
