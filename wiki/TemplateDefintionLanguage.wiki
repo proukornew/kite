@@ -9,7 +9,7 @@ Here is an example of KiTE template:
 </ul>
 }}}
 
-When given by following JS data:
+When given by the following JS data:
 {{{
 { 
   contacts:[
