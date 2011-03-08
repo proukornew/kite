@@ -1,0 +1,19 @@
+#summary kite() function call.
+
+= Introduction =
+
+All code of the KiTE engine is contained inside the `kite()` function.
+There is an optional collection of formatting functions that is available at kite.formatters (JS object - map of name/function pairs)
+
+= The kite() function =
+
+Has following signature: 
+
+`kite(_template_:string, _data_: object | array [,_formatters_]): string`
+
+Where:
+  * _template_, string, is a source of the template or if it starts from '#' is treated as an id of `<script type="text/x-kite" id=...>` element that contains template source.
+  * _data_, object or array, that contains data that will be used for template "instantiation".
+  * _formatters_, map of name/function, collection of custom formatters that will be used for producing this this particular instance of the template.
+
+Function returns "instantiated" template - text generated from the data using the template.
