@@ -201,6 +201,10 @@
       scan_block(-1,""); // scan the sequence 
     }
     compile();
+    
+    if( data === undefined ) // if no data provided just return compiled version for later use.
+      return function(data) { return exec(data); }
+    
     return exec(data); // execute the block
   })
 // kate.formatters = default set of some usefull formatters 
