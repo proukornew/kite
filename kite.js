@@ -58,6 +58,7 @@
     }
     
     function exec(data) { // instantiate the template
+      out = ""; 
       exec_block(data instanceof Array?({"":data}):data, -1, parts.length ); // execute the block
       return out; //out.join(""); // output is an array of strings, glue them together and return.  
     }
