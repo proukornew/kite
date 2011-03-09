@@ -22,14 +22,13 @@
   
  // KiTE home: http://code.google.com/p/kite/
 
-(kite = function(template, data, formatters)
+(kite = function(template, /*optional*/ data)
   {
     var out = "";       // out buffer
     var parts = [];     // compiled template parts
     var context = null; // current context data object
-    var index = null; // current context data object
-    formatters = formatters || {};
-    var primordial_formatters = kite.formatters || {};
+    var context_index = null;   // current context index 
+    var formatters = kite.formatters || {};
      
     if( template.charAt(0) == "#" ) { // template is defined by id of <script type="text/x-kite"> element
       var templateElement = null;
@@ -47,14 +46,16 @@
 
     function exec_block(data, from_index, to_index) {
       var saved_context = context;
+      var saved_index = context_index;
       if( data instanceof Array ) {
         var nm = data.length;
-        for( var n = 0; n < nm; ++n ) { context = data[n];  
+        for( context_index = 0; context_index < nm; ++context_index ) { context = data[context_index];  
             exec_range(from_index, to_index); } }
       else {
-        context = data;
+        context = data; context_index = undefined;
         exec_range(from_index, to_index); }
       context = saved_context;
+      context_index = saved_index;
     }
     
     function exec(data) { // instantiate the template
@@ -80,12 +81,12 @@
         return to_index - from_index; };      
     }
     
-    function decl_terminal(name, index)
+    function decl_terminal(name)
     {
       var frmf, fmti = name.indexOf("|");
       if( fmti >= 0) { frmf = name.substr(fmti+1); 
                        name = name.substr(0,fmti);
-                       frmf = formatters[frmf] || primordial_formatters[frmf]; }
+                       frmf = formatters[frmf]; }
       if( name == "." )
       {
         if( frmf ) return function() { out += frmf(context,context); return 1; };
@@ -108,10 +109,10 @@
     function decl_condition(text, from_index, to_index, done_index)
     {
       // condition expression, compile into the function:
-      var tfun = new Function("_", "with(_) {return (" + text + ");}" );
+      var tfun = new Function("_", "at" , "with(_) {return (" + text + ");}" );
       return function() {
-        if(tfun( context )) { 
-          exec_range(from_index, to_index);       // <- if condition is true then execute code behind it: 
+        if(tfun( context, context_index )) { 
+          exec_range(from_index, to_index);   // <- if condition is true then execute code behind it: 
           return done_index - from_index; }   //    and jump to past else part.
         return to_index - from_index; };      // <- otherwise go to next instruction.
     }
@@ -191,7 +192,7 @@
                         return pn; }
                       parts[start] = decl_condition(expr,start,pn,pn); 
                       return pn - 2;
-            case "/": parts[start] = decl_condition(expr,start,pn);
+            case "/": parts[start] = decl_condition(expr,start,pn,pn);
                       if( part.substr(1) != "?" ) return pn - 2;
                       parts[pn] = ""; return pn; 
             default:  parts[pn] = decl_terminal(part); continue;
