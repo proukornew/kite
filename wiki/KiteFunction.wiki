@@ -22,10 +22,12 @@ Where:
 
 Examples of calls:
 
-{{{var text = kite("#sample", data); // load and execute the template
+{{{
+var text = kite("#sample", data); // load and execute the template
 }}}
 
-{{{var template = kite("#sample"); // compile the template
+{{{
+var template = kite("#sample"); // compile the template
 var text = template(data);      // execute the template - produce 
-                                // the text from the data.
+                                // text from the data.
 }}}
