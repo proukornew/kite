@@ -75,9 +75,27 @@
         {{/contacts}}
       </ul>
     </script>
+    
+    <!-- list with sublists--> 
+    <script type="text/kite" id="t5">
+      List indexes handling (note comma generation in the list):
+      <dl>
+        {{#contacts}}
+          <dt><b>{{firstName}}</b> <i>{{lastName}}</i><br/></dt>
+          <dd>
+             {{#works}}
+                {{? at != 0}}, {{/?}} <q>{{.}}</q>
+             {{^works}}
+               No significant masterpieces?
+             {{/works}}
+          </dd>
+        {{/contacts}}
+      </dl>
+    </script>
+    
 
     <!-- Custom formatters --> 
-    <script type="text/kite" id="t5">
+    <script type="text/kite" id="t6">
       Custom field formatters:
       <ul>
         {{#contacts}}
@@ -108,7 +126,7 @@
 
     function run_tests()
     {
-      for(var n = 1; n <= 5; ++n)
+      for(var n = 1; n <= 6; ++n)
       {
         $("#r" + n ).html( kite("#t" + n, data) );
         $("#s" + n + ">pre").text( $("#t"+n ).text() );
@@ -129,5 +147,6 @@
     <tr><td id="s3"><pre/></td><td id="r3"></td></tr>
     <tr><td id="s4"><pre/></td><td id="r4"></td></tr>
     <tr><td id="s5"><pre/></td><td id="r5"></td></tr>
+    <tr><td id="s6"><pre/></td><td id="r6"></td></tr>
 </body>
 </html>
