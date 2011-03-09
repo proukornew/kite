@@ -18,7 +18,6 @@ The kite() function can be invoked in two different ways:
 Where:
   * _template_, string, is a source of the template or if it starts from '#' is treated as an id of `<script type="text/x-kite" id=...>` element that contains template source.
   * _data_, object or array, that contains data that will be used for template "instantiation".
-  * _formatters_, map of name/function, collection of custom formatters that will be used for producing this this particular instance of the template.
 
 Examples of calls:
 
