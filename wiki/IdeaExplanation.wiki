@@ -13,8 +13,7 @@ parts[0] = "ABC";
 parts[1] = "foo";
 parts[2] = "DEF";
 }}}
-Even items in the array are always terminal stings (items: 0, 2)
-And odd items are instruction (item 1 here).
+Items on even places in the array are always terminal stings (items: 0, 2). And odd items are "instructions" (item 1 here).
 
 Last compilation phase replace instructions by their compiled versions so final template look like:
 
