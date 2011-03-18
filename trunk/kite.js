@@ -27,7 +27,7 @@
     var out = "";       // out buffer
     var parts = [];     // compiled template parts
     var context = null; // current context data object
-    var context_index = null;   // current context index 
+    var context_index = 0;   // current context index 
     var formatters = kite.formatters || {};
      
     if( template.charAt(0) == "#" ) { // template is defined by id of <script type="text/x-kite"> element
