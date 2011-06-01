@@ -8,8 +8,7 @@
       .c3 { color:gray; }
     
     </style>
-    <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" src="kite.js"></script>
+    <script type="text/tiscript" src="kite.tis"></script>
 
     <!-- simple list --> 
     <script type="text/kite" id="t1">
@@ -105,7 +104,7 @@
       </ul>
     </script>
     
-  <script type="text/javascript" >
+  <script type="text/tiscript" >
     
     var data = { 
       contacts:[ 
@@ -115,25 +114,20 @@
             works:["This Side of Paradise", "The Beautiful and Damned","The Last Tycoon"] }, 
         { firstName: "Charlie",lastName:"Chaplin", role:"actor", birthdate:"1889-04-16",
             works:["Making a Living", "Kid Auto Races at Venice","The Face on the Bar Room Floor"] }, 
-        { firstName: "Peter",lastName:"Romanov", role:"tzar", birthdate:"1672-06-09" }
+        { firstName: "Peter",lastName:"Romanov", role:"tzar", birthdate:"1672-06-09" },       
         ] 
     };
     
-    function escape(s)
-    {
-      return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-    }
-
     function run_tests()
     {
       for(var n = 1; n <= 6; ++n)
       {
-        $("#r" + n ).html( kite("#t" + n, data) );
-        $("#s" + n + ">pre").text( $("#t"+n ).html() );
+        self.select("#r" + n ).html = kite("#t" + n, data);
+        self.select("#s" + n + ">pre").text = self.select("#t" + n ).text;
       }
     }
     
-    $(run_tests);
+    run_tests();
     
     </script>
     
