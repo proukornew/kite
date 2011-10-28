@@ -1,4 +1,4 @@
-/* KITE Is a Template Engine 
+/* Kite Is a Template Engine 
    Copyright (c) 2011 Andrew Fedoniouk, http://terrainformatica.com/
 
   Permission is hereby granted, free of charge, to any person obtaining
@@ -26,9 +26,15 @@
   {
     var out = "";       // out buffer
     var parts = [];     // compiled template parts
+    var root = null;    // root data object
     var context = null; // current context data object
     var context_index = 0;   // current context index 
     var formatters = kite.formatters || {};
+    
+    function log(text)
+    {
+      if(console) console.log("kite:" + text);
+    }
      
     if( template.charAt(0) == "#" ) { // template is defined by id of <script type="text/x-kite"> element
       var templateElement = null;
@@ -58,8 +64,10 @@
       context_index = saved_index;
     }
     
-    function exec(data) { // instantiate the template
+    function exec(data,contextFormatters) { // instantiate the template
+      root = data;
       out = ""; 
+      formatters = contextFormatters || kite.formatters || {};
       exec_block(data instanceof Array?({"":data}):data, -1, parts.length ); // execute the block
       return out; //out.join(""); // output is an array of strings, glue them together and return.  
     }
@@ -81,21 +89,41 @@
         return to_index - from_index; };      
     }
     
+    function get_formatter(frmf)
+    {
+      var t = formatters[frmf];
+      if( typeof t == "function" ) return t;
+      // otherwise use it as an expression: 
+      frmf = frmf.replace("@","_val_").replace("#","_ctx_");
+      try { return new Function("_val_","_ctx_","_root_","_formatters_","_log_",
+                                "{try { with(_formatters_) {with(_root_){return ("+ frmf + ");}}} catch(e){_log_('formatter:' + e + ' in "+frmf+"');}}" ); }
+      catch(e) { log(e + " in "+ frmf); return; }
+    }
+    
     function decl_terminal(name)
     {
+      if( name == "" ) return name; // NOP
       var frmf, fmti = name.indexOf("|");
       if( fmti >= 0) { frmf = name.substr(fmti+1); 
                        name = name.substr(0,fmti);
-                       frmf = formatters[frmf]; }
-      if( name == "." )
-      {
-        if( frmf ) return function() { out += frmf(context,context); return 1; };
+                       frmf = get_formatter(frmf); }
+      if( name == "" || name == "." ) // special case - {{.}} means current context object
+      {  
+        if( frmf ) return function() { out += frmf(context,context,root,formatters,log); return 1; };
         else       return function() { if( context !== undefined ) out += context; return 1; };
       }
-      else
+      else if( (/^w+$/).test(name) )// simple name
       {
-        if( frmf ) return function() { var v = context[name]; out += frmf(v,context); return 1; };
+        if( frmf ) return function() { var v = context[name]; out += frmf(v,context,root,formatters,log); return 1; };
         else       return function() { var v = context[name]; if( v !== undefined ) out += v; return 1; };
+      }
+      else  // looks like an expression
+      {
+        var tfun;
+        try { tfun = new Function("_in_","_log_","{try {return (_in_." + name + ");} catch(e){ _log_(e + ' in "+name+"'); }}" ); }
+        catch(e) { log(e + " in "+ name); return; }
+        if( frmf ) return function() { out += frmf(tfun(context,log),context,root,formatters,log); return 1; };
+        else       return function() { var v = tfun(context,log); if( v !== undefined ) out += v; return 1; };
       }
     }
     
@@ -109,9 +137,10 @@
     function decl_condition(text, from_index, to_index, done_index)
     {
       // condition expression, compile into the function:
-      var tfun = new Function("_", "at" , "with(_) {return (" + text + ");}" );
+      var tfun = new Function("_ctx_", "at" , "_formatters_" ,"_log_",
+                              "try { with(_formatters_){with(_ctx_) {return (" + text + ");}}} catch(e){_log_('conditional:' + e + ' in \""+text+"\"'); }" );
       return function() {
-        if(tfun( context, context_index )) { 
+        if(tfun( context, context_index,formatters,log )) { 
           exec_range(from_index, to_index);   // <- if condition is true then execute code behind it: 
           return done_index - from_index; }   //    and jump to past else part.
         return to_index - from_index; };      // <- otherwise go to next instruction.
@@ -191,7 +220,7 @@
                         parts[start] = decl_condition(expr,start,pos,pn); 
                         return pn; }
                       parts[start] = decl_condition(expr,start,pn,pn); 
-                      return pn - 2;
+                      return pn;
             case "/": parts[start] = decl_condition(expr,start,pn,pn);
                       if( part.substr(1) != "?" ) return pn - 2;
                       parts[pn] = ""; return pn; 
@@ -205,9 +234,9 @@
     compile();
     
     if( data === undefined ) // if no data provided just return compiled version for later use.
-      return function(data) { return exec(data); }
+      return function(data,formatters) { return exec(data,formatters); }
     
-    return exec(data); // execute the block
+    return exec(data,formatters); // execute the block
   })
 // kate.formatters = default set of some usefull formatters 
 .formatters = {
