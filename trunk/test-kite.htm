@@ -8,7 +8,7 @@
       .c3 { color:gray; }
     
     </style>
-    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script type="text/javascript" src="kite.js"></script>
 
     <!-- simple list --> 
@@ -105,18 +105,38 @@
       </ul>
     </script>
     
+    <!-- Custom formatters --> 
+    <script type="text/kite" id="t7">
+      <h3>Formatters ++ (a.k.a. template intantiation context) </h3>
+      Total {{setName}}: {{contacts.length}} (sample of expression in context execution)
+      <ul>
+        {{#contacts}}
+          <li><b>{{firstName}}</b> <i>{{lastName}}</i>,  
+              from: {{country|countries[@]}}</li>
+        {{/contacts}}
+      </ul>
+      Kite is developed in {{|countries["CA"]}} (sample of "rooted" value inclusion)
+    </script>
+    
+    
   <script type="text/javascript" >
     
     var data = { 
+      setName: "Persons",
       contacts:[ 
-        { firstName: "Ernest", lastName:"Hemingway", role:"writer", birthdate:"1899-07-21",
+        { firstName: "Ernest", lastName:"Hemingway", role:"writer", birthdate:"1899-07-21", country:"US",
             works:["For Whom the Bell Tolls", "Indian Camp","The Sun Also Rises"] },
-        { firstName: "Scott", lastName:"Fitzgerald", role:"writer", birthdate:"1896-09-24",
+        { firstName: "Scott", lastName:"Fitzgerald", role:"writer", birthdate:"1896-09-24", country:"US",
             works:["This Side of Paradise", "The Beautiful and Damned","The Last Tycoon"] }, 
-        { firstName: "Charlie",lastName:"Chaplin", role:"actor", birthdate:"1889-04-16",
+        { firstName: "Charlie",lastName:"Chaplin", role:"actor", birthdate:"1889-04-16", country:"US",
             works:["Making a Living", "Kid Auto Races at Venice","The Face on the Bar Room Floor"] }, 
-        { firstName: "Peter",lastName:"Romanov", role:"tzar", birthdate:"1672-06-09" }
-        ] 
+        { firstName: "Peter",lastName:"Romanov", role:"tzar", birthdate:"1672-06-09", country:"RU" }
+        ],
+      countries: {
+        "US": "United States of America",
+        "RU": "Russia",
+        "CA": "Canada"
+      }
     };
     
     function escape(s)
@@ -126,7 +146,7 @@
 
     function run_tests()
     {
-      for(var n = 1; n <= 6; ++n)
+      for(var n = 1; n <= 7; ++n)
       {
         $("#r" + n ).html( kite("#t" + n, data) );
         $("#s" + n + ">pre").text( $("#t"+n ).html() );
@@ -148,5 +168,6 @@
     <tr><td id="s4"><pre/></td><td id="r4"></td></tr>
     <tr><td id="s5"><pre/></td><td id="r5"></td></tr>
     <tr><td id="s6"><pre/></td><td id="r6"></td></tr>
+    <tr><td id="s7"><pre/></td><td id="r7"></td></tr>
 </body>
 </html>
