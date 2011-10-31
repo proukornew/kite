@@ -46,7 +46,9 @@
     function exec_range(from_index, to_index) {
       for( var i = from_index + 1; i < to_index; ) {
         var el = parts[i];
-        if( typeof el == "function" ) i += el(); else { out += el; ++i; } 
+        //if( typeof el == "function" ) i += el(); else { out += el; ++i; } 
+        if( i & 1 ) { /*odd positions: functions or NOPs*/ if(el) i += el(); else ++i; }
+        else { /*even positions: literal strings*/ out += el; ++i; } 
       }
     }
 
@@ -147,7 +149,7 @@
     }
     
     function tokenize() // bild an array of [literal, directive, literal, directive, ...] 
-                        // where even elements are directive - stuff inside '{' '}'
+                        // where even elements are directive - stuff inside '{{' '}}'
                         // and odd elements are literals that shall go to output as they are 
     {
       for(var pos = 0; pos < template.length; ) {
@@ -162,7 +164,7 @@
     function compile() {
       // 1) tokenize all 
       tokenize();
-      // 2) replace all directives by correspondent compiled functions ("parametrised" closures in fact).
+      // 2) replace all directives by corresponding compiled functions ("parametrised" closures in fact).
       var total_parts = parts.length; // total parts
 
       function scan_tail(start, et) {  // scan {^} "else" directive, 'et' - expected tail  
@@ -239,12 +241,12 @@
     return exec(data,formatters); // execute the block
   })
 // kate.formatters = default set of some usefull formatters 
-.formatters = {
-  "date"    : function(v)  { // accepts date string as "yyyy-mm-dd"
-              var parts = v.split("-");        
-              if( parts.length != 3 ) return v;
-              return ["January","February","March","April","May","June","July","August","September","October","November","December"][parseInt(parts[1],10)-1]
-                    + " " +  parseInt(parts[2],10) + ", " + parts[0]; },
-  "escaped" : function(v) { // html escapement
-              return v.replace("&","&amp;").replace("\"","&quot;").replace("'","&#39;").replace("<","&lt;").replace(">","&gt;"); }
-};
+  .formatters = {
+    "date"    : function(v)  { // accepts date string as "yyyy-mm-dd"
+                var parts = v.split("-");        
+                if( parts.length != 3 ) return v;
+                return ["January","February","March","April","May","June","July","August","September","October","November","December"][parseInt(parts[1],10)-1]
+                      + " " +  parseInt(parts[2],10) + ", " + parts[0]; },
+    "escaped" : function(v) { // html escapement
+                return v.replace("&","&amp;").replace("\"","&quot;").replace("'","&#39;").replace("<","&lt;").replace(">","&gt;"); }
+  };
