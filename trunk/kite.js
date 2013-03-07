@@ -29,6 +29,7 @@
     var root = null;    // root data object
     var context = null; // current context data object
     var context_index = 0;   // current context index 
+    var context_set = null;  // current set (array) being processed  
     var formatters = kite.formatters || {};
     
     function log(text)
@@ -55,7 +56,9 @@
     function exec_block(data, from_index, to_index) {
       var saved_context = context;
       var saved_index = context_index;
+      var saved_set = context_set;
       if( data instanceof Array ) {
+        context_set = data;
         var nm = data.length;
         for( context_index = 0; context_index < nm; ++context_index ) { context = data[context_index];  
             exec_range(from_index, to_index); } }
@@ -64,6 +67,7 @@
         exec_range(from_index, to_index); }
       context = saved_context;
       context_index = saved_index;
+      context_set = saved_set;      
     }
     
     function exec(data,contextFormatters) { // instantiate the template
@@ -139,10 +143,10 @@
     function decl_condition(text, from_index, to_index, done_index)
     {
       // condition expression, compile into the function:
-      var tfun = new Function("_ctx_", "at" , "_formatters_" ,"_log_",
+      var tfun = new Function("_ctx_", "at" , "set", "_formatters_" ,"_log_",
                               "try { with(_formatters_){with(_ctx_) {return (" + text + ");}}} catch(e){_log_('conditional:' + e + ' in \""+text+"\"'); }" );
       return function() {
-        if(tfun( context, context_index,formatters,log )) { 
+        if(tfun( context, context_index,context_set,formatters,log )) { 
           exec_range(from_index, to_index);   // <- if condition is true then execute code behind it: 
           return done_index - from_index; }   //    and jump to past else part.
         return to_index - from_index; };      // <- otherwise go to next instruction.
