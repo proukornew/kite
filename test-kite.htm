@@ -84,7 +84,8 @@
           <dt><b>{{firstName}}</b> <i>{{lastName}}</i><br/></dt>
           <dd>
              {{#works}}
-                {{? at != 0}}, {{/?}} <q>{{.}}</q>
+                <q>{{.}}</q>
+                {{? at != set.length - 1}},{{/?}}
              {{^works}}
                No significant masterpieces?
              {{/works}}
