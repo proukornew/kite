@@ -64,3 +64,13 @@ Conditional sections get rendered if their expression evaluates to _true_ in run
 
   * `{{? expr1 }}`  section1 `{{? expr2}}`  section2 ...  `{{^?}}` ... "else" section `{{/?}}`
  that are "chained" conditional sections. They follow statndard if-elseif-elseif-else-fi logic used in almost all programming languages.
+
+There are two predefined variables `at` and `set` that you can use in conditional expressions:
+
+  * `set` - reference to current array of records.
+  * `at` - current index in that array. 
+
+These two variables allow to express conditions like 
+"at last record", "at first record", "at even/odd record". 
+Conditions like "if previous record has that" and "if next record has that" are also feasible with the change.
+ 
